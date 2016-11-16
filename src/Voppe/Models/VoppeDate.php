@@ -2,12 +2,14 @@
 
 namespace Voppe\Models;
 
-class VoppeDate {
-
+class VoppeDate 
+{
     // The separator can be easily replaced, or multiple separators can be allowed
     const DatePattern = '/^([0-9]{4})\/([0-9]{2})\/([0-9]{2})$/';
+    
     // The epoch must be a year after a leap year for the leap year math to work
     const EpochYear = 1901;
+    
     const MonthLengths = [
         VoppeMonths::January => 31,
         VoppeMonths::February => 28.25,
@@ -125,7 +127,7 @@ class VoppeDate {
     public static function isValidDay($year, $month, $day): bool {
         return $day >= 1 && $day <= static::calculateDaysInMonth($year, $month);
     }
-
+    
     public static function isLeapYear($year): bool {
         return ($year % 4) === 0;
     }
@@ -158,6 +160,7 @@ class VoppeDate {
      */
     public static function calculateDaysSinceYearStart($year, $month, $day): int {
         $days = $day - 1;
+
         $days += static::DaysSinceYearStartInMonth[$month];
         if ($month > VoppeMonths::February && static::isLeapYear($year)) {
             $days += 1;
@@ -165,7 +168,7 @@ class VoppeDate {
 
         return $days;
     }
-
+    
     /**
      * Calculates the amount of leap days (29th February) between the two dates
      * 
@@ -175,11 +178,10 @@ class VoppeDate {
      */
     public static function calculateLeapDaysBetween($daysSinceEpochStart, $daysSinceEpochEnd): int {
         // By dividing the offsetted day by the days between leap days, we get a value that, if floored, can tell us which leap "interval" that day belongs to.
-        $leapStart = floor(($daysSinceEpochStart + VoppeDate::LeapOffset) / VoppeDate::DaysBetweenLeapDay);
-        $leapEnd = floor(($daysSinceEpochEnd + VoppeDate::LeapOffset) / VoppeDate::DaysBetweenLeapDay);
-
+        $leapStart = floor(($daysSinceEpochStart + static::LeapOffset) / static::DaysBetweenLeapDay);
+        $leapEnd = floor(($daysSinceEpochEnd + static::LeapOffset) / static::DaysBetweenLeapDay);
+        
         // By subtracting the interval values between them, we get the amount of leap days.
         return abs($leapEnd - $leapStart);
     }
-
-}
+}   
